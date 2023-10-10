@@ -9,11 +9,11 @@ dim(data)
 head(data, n = 5)
 
 #Dropping nuisance variables
-data <- data[,-c(5, 6 , 7 , 11 , 12, 17)]
-colnames(data) #Checking correct columns were dropped
+data_dropped <- data[,-c(5, 6 , 7 , 10, 11 , 12, 17)]
+colnames(data_dropped) #Checking correct columns were dropped
 
 #Filter for LocationAbbr = TX
-data_tx <- data[data$LocationAbbr == "TX", ]
+data_tx <- data_dropped[data_dropped$LocationAbbr == "TX", ]
 unique(data_tx$LocationAbbr) #Checking data is filtered for TX
 
 #Checking structure of filtered data
@@ -23,3 +23,4 @@ dim(data_tx)
 #Comparing change in dimensions
 #Original data 59076 rows and 19 columns
 #Filtered data 4590 rows and 13 columns 
+
