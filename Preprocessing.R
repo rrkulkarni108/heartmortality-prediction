@@ -45,3 +45,11 @@ arranged_county_data <- county_data %>%
 head(arranged_county_data , n = 5)
 tail(arranged_county_data , n = 5)
 
+
+#Group based on Gender
+gender_data <- data_tx %>%
+  group_by(Stratification1)%>%
+  summarise(occurances = n(),
+            total_value = sum(Data_Value , na.rm = T))
+
+#Seems like there are an equal number of occurrences but a higher data value for Males compared to Women
