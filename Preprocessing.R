@@ -1,8 +1,5 @@
-#Loading required libraries
-require(dplyr)
-
-#Load in the dataset
-data <- read.csv("Heart_Disease_Mortality_Data_Among_US_Adults__35___by_State_Territory_and_County", header= TRUE)
+#Load in the dataset (csv. file added to repository already)
+data <- read.csv("Heart_Disease_Mortality_Data_Among_US_Adults__35___by_State_Territory_and_County.csv", header= T)
 
 #Looking at structure of the data
 str(data)
