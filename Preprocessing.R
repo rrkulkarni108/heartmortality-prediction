@@ -53,3 +53,10 @@ gender_data <- data_tx %>%
             total_value = sum(Data_Value , na.rm = T))
 
 #Seems like there are an equal number of occurrences but a higher data value for Males compared to Women
+
+
+#Check for missing data
+sapply(data_tx, function(x) sum(is.na(x)))
+#1726 missing values in Data_Value column
+#Doesn't make sense to discard such a large number of samples
+#Impute? We can use a prediction model to handle missing data
