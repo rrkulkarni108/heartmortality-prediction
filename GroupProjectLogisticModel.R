@@ -1,11 +1,14 @@
 ## Continuing from Missingdata.R...
 ## Logistic Regression
 
+setwd("C:/Users/holly/OneDrive/Documents/R/656")
+
 ## Loading required packages
 require(dplyr)
 require(readr)
 require(caret)
 require(pROC)
+require(nnet)
 
 ## Using imp_data_tx from Missingdata.R file
 
@@ -27,17 +30,19 @@ imp_data_tx %>%
 
 ## Data Splitting
 ## Using County as the stratifier
-Y                 = imp_data_tx$Data_Value	## In example Y is qualitative
+Y                 = imp_data_tx$Data_Value_Binned
 set.seed(2)
 trainingDataIndex = createDataPartition(imp_data_tx$LocationDesc, p = 0.5, list=F)
 trainingData      = imp_data_tx[trainingDataIndex,]
 testingData       = imp_data_tx[-trainingDataIndex,]
 
-Xtrain            = select(trainingData, -Data_Value)
-Xtest             = select(testingData, -Data_Value)
-Ytrain            = select(trainingData, Data_Value)
-Ytrain            = as.numeric(Ytrain$Data_Value)
-Ytest             = select(testingData, Data_Value)
+Xtrain            = select(trainingData, -Data_Value_Binned)
+Xtest             = select(testingData, -Data_Value_Binned)
+Ytrain            = factor(select(trainingData, Data_Value_Binned) %>% unlist(),
+				labels = c('Very Low', 'Low', 'Moderate', 'High', 'Very High'))
+Ytest             = factor(select(testingData, Data_Value_Binned) %>% unlist(),
+				labels = c('Very Low', 'Low', 'Moderate', 'High', 'Very High'))
+
 
 ## Cleaning up memory
 rm(trainingData)
@@ -62,16 +67,9 @@ XtrainFull  = predict(dummyModel, Xtrain)
 XtestFull   = predict(dummyModel, Xtest)
 
 ## Logistic Regression
-## Left out releveling of Y done in class notes because our supervisor is not qualitative
-trControl   = trainControl(method = 'none')
-outLogistic = train(x = XtrainFull, y = Ytrain, method = 'glm',
-			trControl = trControl)
+YtrainRelevel = relevel(Ytrain, ref = 'Very High')
+YtestRelevel  = relevel(Ytest, ref = 'Very High')
 
-YhatTestProb = predict(outLogistic, XtestFull, type = 'prob')
+trControl = trainControl(method = 'none')
+outLogistic = train(x = XtrainFull, y = YtrainRelevel, method = 'multinom', trControl = trControl)
 
-## Error in dimnames(out)[[2]] <- modelFit$obsLevels : 
-## length of 'dimnames' [2] not equal to array extent
-
-
-calibProbs = calibration(Ytest ~ YhatTestProb)
-xyplot(calibProbs)
