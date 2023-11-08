@@ -6,32 +6,40 @@ require(ggplot2)
 data <- read.csv("Heart_Disease_Mortality_Data_Among_US_Adults__35___by_State_Territory_and_County.csv", header= T)
 
 #Looking at structure of the data
-str(data)
-dim(data)
+str(data) #int, character and num columns
+dim(data) #59076 obs. of  19 variables
 
 #Observing first 5 rows
 head(data, n = 5)
 
 #Dropping nuisance variables
-data_dropped <- data[,-c(5, 6 , 7 , 10, 11 , 12, 17)]
+data_dropped <- data[,-c(5, 6 , 7 , 10, 11 , 12, 17)] 
 colnames(data_dropped) #Checking correct columns were dropped
 
+#Now we subset our data to be for the state of Texas
 #Filter for LocationAbbr = TX
 data_tx <- data_dropped[data_dropped$LocationAbbr == "TX", ]
 unique(data_tx$LocationAbbr) #Checking data is filtered for TX
 
 #Checking structure of filtered data
 str(data_tx)
-dim(data_tx)
+dim(data_tx) #4590 obs. of  12 variables
 
 #Comparing change in dimensions
 #Original data 59076 rows and 19 columns
-#Filtered data 4590 rows and 13 columns 
+#Filtered data 4590 rows and 12 columns 
 
 
 #Exploratory Data Analysis (EDA)
 summary(data_tx) #Summary statistics
 
+View(data_tx)
+
+#We can observe that in Data_value column there are 1726 NA's. 
+#We will deal with them later.                       
+
+#We sum the death rate (Data_value) per 100,000 people so we have an aggregate
+#for each county in Texas
 #Observing counties
 county_data <- data_tx %>%
   group_by(LocationDesc)%>%
