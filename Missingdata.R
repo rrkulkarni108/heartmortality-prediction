@@ -38,3 +38,6 @@ bin_boundaries <- c(-Inf, 100, 200, 400, 800, Inf)
 bin_labels <- c('Very low', 'Low', 'Moderate', 'High', 'Very high')
 imp_data_tx$Data_Value_Binned <- cut(imp_data_tx$Data_Value, breaks = bin_boundaries, labels = bin_labels)
 
+
+
+
