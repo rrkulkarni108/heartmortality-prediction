@@ -1,6 +1,8 @@
 ## Continuing from Missingdata.R...
 ## Linear Regression
 
+setwd("C:/Users/holly/OneDrive/Documents/R/656")
+
 ## Loading required packages
 require(dplyr)
 require(ggplot2)
@@ -9,13 +11,15 @@ require(lattice)
 require(corrplot)
 require(e1071)
 
-str(imp_data_tx)
+imp_gender_race_tx <- read.csv("imp_gender_race_tx.csv")
 
-X = imp_data_tx %>%
-  select(Stratification1, Stratification2, LocationDesc) %>%
+str(imp_gender_race_tx)
+
+X = imp_gender_race_tx %>%
+  select(Gender, Race_Ethnicity, County) %>%
   mutate_all(factor)
 
-Y = imp_data_tx$Data_Value
+Y = log(imp_gender_race_tx$DeathCount)
 
 dummyModel = dummyVars(~ ., data = X, fullRank=T)
 Xdummy     = predict(dummyModel, X)
