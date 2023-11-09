@@ -5,7 +5,6 @@ require(ggplot2)
 #Load in the dataset (csv. file added to repository already)
 data <- read.csv("Heart_Disease_Mortality_Data_Among_US_Adults__35___by_State_Territory_and_County.csv", header= T)
 
-data <- read.csv("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/Heart_Disease_Mortality_Data_Among_US_Adults__35___by_State_Territory_and_County.csv")
 #Looking at structure of the data
 str(data) #int, character and num columns
 dim(data) #59076 obs. of  19 variables
@@ -39,6 +38,7 @@ View(data_tx)
 #We can observe that in Data_value column there are 1726 NA's. 
 #We will deal with them later.                       
 
+##############################################################################
 #We sum the death rate (Data_value) per 100,000 people so we have an aggregate
 #for each county in Texas
 #Observing counties
@@ -63,24 +63,22 @@ gender_data <- data_tx %>%
 
 #Seems like there are an equal number of occurrences but a higher data value for Males compared to Women
 
+subsetgenderrace <- data_tx %>%
+  group_by(LocationDesc)%>%
+  summarise(total_value = sum(Data_Value , na.rm= T))
+############################################################################################################
 
 #Check for missing data
 sapply(data_tx, function(x) sum(is.na(x)))
+
 #1726 missing values in Data_Value column
 #Doesn't make sense to discard such a large number of samples
 #Impute? We can use a prediction model to handle missing data
 
-
-subsetgenderrace <- data_tx %>%
-  group_by(LocationDesc)%>%
-  summarise(total_value = sum(Data_Value , na.rm= T))
+#visualize missing values
+md.pattern(data_tx, rotate.names = TRUE)
 
 
-
-
-#Subset data for GLM fitting. 
-#Goal: Poisson Rate GLM Regression and Multicategory Logit models used 
-#to predict the mean deaths from Heart rate mortality across counties
 #Since data for Texas is stratified using Gender and Race/Ethnicity, 
 #and we have category of Overall which aggregates different combinations
 #of the two strata, we will remove these rows which have Overall in either 
@@ -89,7 +87,7 @@ subsetgenderrace <- data_tx %>%
 gender_race_tx = data_tx[data_tx[, c(8)] != "Overall" & data_tx[, c(10)] != "Overall", ]
 head(gender_race_tx)
 dim(gender_race_tx)
-View(gender_race_tx)
+#View(gender_race_tx)
 
 #also will remove now the columns of Year, LocationAbbr, GeographicLevel, Data_Value_Unit, 
 #StratificationCategory1, StratificationCategory2.
@@ -104,10 +102,9 @@ for (i in 1:length(colnames(gender_race_tx))){
 colnames(gender_race_tx) #check colnames
 
 View(gender_race_tx)
+head(gender_race_tx)
 dim(gender_race_tx)
 
 #Comparing change in dimensions
 #Original data 59076 rows and 19 columns
 #Subsetted data 2550 rows and 6 columns
-
-
