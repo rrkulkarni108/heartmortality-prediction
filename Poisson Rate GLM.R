@@ -1,33 +1,53 @@
+#Continuing from Missingdata.R....
 
-
+#Loading required packages
+require(dplyr)
+require(ggplot2)
+require(readr)
+require(caret)
+require(pROC)
+require(lattice)
+require(corrplot)
+require(e1071)
 
 #load in raw original dataset
-data <- read.csv("Heart_Disease_Mortality_Data_Among_US_Adults__35___by_State_Territory_and_County.csv", header= T)
+imp_gender_race_tx <- read.csv("imp_gender_race_tx.csv", header= T)
 
-data <- read.csv("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/Heart_Disease_Mortality_Data_Among_US_Adults__35___by_State_Territory_and_County.csv")
+set.seed(1)
 
-#Dropping nuisance variables
-data_dropped <- data[,-c(5, 6 , 7 , 10, 11 , 12, 17)] 
+#create ID variable
+imp_gender_race_tx$id <- 1:nrow(imp_gender_race_tx)
 
-#Now we subset our data to be for the state of Texas
-#Filter for LocationAbbr = TX
-data_tx <- data_dropped[data_dropped$LocationAbbr == "TX", ]
+#Use 70% of dataset as training set and remaining 30% as testing set 
+train <- imp_gender_race_tx %>% dplyr::sample_frac(0.7)
+test  <- dplyr::anti_join(imp_gender_race_tx, train, by = 'id')
+
+# training set has 1785 rows, 7 columns (including id)
+dim(train)
+
+# testing set has 765 rows, 7 columns (including id)
+dim(test)
+
+
+
 
 #Subset data for GLM fitting. 
 #Goal: Poisson Rate GLM Regression and Multicategory Logit models used 
 #to predict the mean deaths from Heart rate mortality across counties
-#Since data for Texas is stratified using Gender and Race/Ethnicity, 
-#and we have category of Overall which aggregates different combinations
-#of the two strata, we will remove these rows which have Overall in either 
-#stratus' column. 
 
-gender_race_tx = data_tx[data_tx[, c(8)] != "Overall" & data_tx[, c(10)] != "Overall", ]
-head(gender_race_tx)
-dim(gender_race_tx)
+#Model the average heart rate deaths /100,000 people across Texas counties
+#log(mu) = beta0 + beta1I(gender = Male) + beta2I(Race = Asian and Pacific Islander) +
+#beta3*Race(Indicator = Black) + beta4*Race(Indicator = Hispanic) + beta5*Race(Indicator = Hispanic) + log(100000)
+#Race = American Indian and Alaska Native as well as Gender = Female are in the intercept
+
 
 
 #Fit GLM to raw data. Will update to conduct training model and testing after. 
-population_unit = rep(100000, 2550)
-out1 = glm(Data_Value~factor(Stratification1)+factor(Stratification2), offset = log(population_unit), family = poisson (link = "log"), 
-           data = gender_race_tx)
+
+#offset term
+population_unit = rep(100000, nrow(imp_gender_race_tx))
+
+#fit Poisson rate model
+out1 = glm(DeathCount~factor(Gender)+factor(Race_Ethnicity), offset = log(population_unit), family = poisson (link = "log"), 
+           data = imp_gender_race_tx)
 summary(out1)
