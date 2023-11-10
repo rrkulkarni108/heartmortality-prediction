@@ -13,6 +13,41 @@ require(e1071)
 #load in raw original dataset
 imp_gender_race_tx <- read.csv("imp_gender_race_tx.csv", header= T)
 
+imp_gender_race_tx <- read.csv("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/imp_gender_race_tx.csv")
+
+
+
+str(imp_gender_race_tx)
+population_unit = rep(100000, nrow(imp_gender_race_tx))
+imp_gender_race_tx$population_unit = population_unit
+
+X = imp_gender_race_tx %>%
+  select(Gender, Race_Ethnicity, County) %>%
+  mutate_all(factor)
+#X$population_unit = population_unit
+
+Y = imp_gender_race_tx$DeathCount
+
+dummyModel = dummyVars(~ ., data = X, fullRank=T)
+Xdummy     = predict(dummyModel, X)
+
+trControl = trainControl(method = 'cv', number = 10)
+lmOut     = train(x = Xdummy, y = Y, method = 'glm', family = "poisson", trControl = trControl)# offset = log(X$population_unit),  trControl = trControl)
+
+
+Yhat = predict(lmOut, Xdummy)
+
+residuals = Y - Yhat
+residualPlotData = data.frame(residuals, Yhat)
+ggplot(data = residualPlotData) +
+  geom_point(aes(x = Yhat, y = residuals)) +
+  geom_hline(yintercept = 0, color = 'red')
+
+
+summary(lmOut)$coef
+
+
+
 set.seed(1)
 
 #create ID variable
@@ -51,3 +86,12 @@ population_unit = rep(100000, nrow(imp_gender_race_tx))
 out1 = glm(DeathCount~factor(Gender)+factor(Race_Ethnicity), offset = log(population_unit), family = poisson (link = "log"), 
            data = imp_gender_race_tx)
 summary(out1)
+
+#prediction
+data.pred <- predict.glm(out1, type = "response")
+
+head(data.pred)
+
+
+#since variance of response variable >>> mean of response variable, we 
+#can consider negative binomial glm for overdispersed data

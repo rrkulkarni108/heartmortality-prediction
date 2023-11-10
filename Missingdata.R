@@ -71,10 +71,11 @@ densityplot(impute)
 #some brief visualizations post-imputation
 
 #visualize data after imputation by race/ethnicity
-boxplot(as.numeric(imp_data_tx$DeathCount)~factor(imp_data_tx$Race_Ethnicity) )
+boxplot(as.numeric(imp_data_tx$DeathCount)~factor(imp_data_tx$Race_Ethnicity), col = "lightgreen" , main = "Death Counts by Race", xlab = "Race", ylab = "Death Count (per 100,000 people)")
 
 #visualize data after imputation by gender
-boxplot(as.numeric(imp_data_tx$DeathCount)~factor(imp_data_tx$Gender) )
+boxplot(as.numeric(imp_data_tx$DeathCount)~factor(imp_data_tx$Gender), col = "lightblue", 
+        main = "Death Counts by Gender", xlab = "Gender", ylab = "Death Count (per 100,000 people)")
 
 #create numerical scores column of race/ethnicity for plotting
 imp_data_tx$num_race_eth =  case_when(
@@ -82,7 +83,7 @@ imp_data_tx$num_race_eth =  case_when(
   imp_data_tx$Race_Ethnicity == "Black" ~ 2,
   imp_data_tx$Race_Ethnicity == "Hispanic" ~ 3
 )
-#visualize data by 
+#visualize data by race/ethnicity
 plot(imp_data_tx$num_race_eth,as.numeric(imp_data_tx$DeathCount) )
 
 #visualize the imputed values by race/ethnicity
