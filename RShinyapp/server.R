@@ -9,6 +9,7 @@
 
 library(shiny)
 library(leaflet)
+library(geojsonio)
 
 shinyServer(function(input, output) {
   
@@ -37,17 +38,6 @@ shinyServer(function(input, output) {
     }
     
     # Create leaflet map
-    leaflet() %>%
-      addTiles() %>%
-      addCircleMarkers(
-        data = filtered_data,
-        lat = ~Coordinates[1],
-        lng = ~Coordinates[2],
-        popup = paste("County: ", filtered_data$County, "<br>",
-                      "Death Count: ", filtered_data$DeathCount),
-        label = ~paste("County: ", County),
-        radius = ~sqrt(DeathCount) * 2  # Adjust marker size based on DeathCount
-      )
-    # You can customize the markers, popups, tooltips based on your dataset
+    
   })
 })
