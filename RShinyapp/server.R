@@ -15,6 +15,8 @@ shinyServer(function(input, output) {
   
   # # Reading in the dataset
   # shiny_data <- read.csv("imp_gender_race_tx.csv", header = T)
+   shiny_data <- read.csv("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/imp_gender_race_tx.csv", header = T)
+   
 
   # Function to extract latitude and longitude
   extract_coordinates <- function(coord_string) {
@@ -24,7 +26,15 @@ shinyServer(function(input, output) {
   }
   
   # Apply function to extract coordinates
-  shiny_data$Coordinates <- sapply(shiny_data$LatLong, extract_coordinates)
+  Coordinates <-  sapply(shiny_data$LatLong, extract_coordinates)
+  #odd values- latitudes
+  latitudes <- Coordinates[seq(1, length(Coordinates), 2)]
+  #even values - longitudes
+  longitudes <- Coordinates[c(FALSE, TRUE)]
+  shiny_data$latitude = latitudes
+  shiny_data$longitude = longitudes
+  
+
   
   output$county_map <- renderLeaflet({
     filtered_data <- shiny_data
