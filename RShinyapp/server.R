@@ -51,7 +51,7 @@ shinyServer(function(input, output) {
     
     m <- leaflet() %>%
       addTiles() %>%  # Add default OpenStreetMap map tiles
-      addMarkers(lng=31.81858 , lat=-95.65393, popup="Palestine, TX")
+      addMarkers(lat=31.81858 , lng=-95.65393, popup="Palestine, TX")
     m  # Print the map
     
   })
