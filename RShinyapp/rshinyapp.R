@@ -8,6 +8,7 @@ library(leaflet)
 library(geojsonio)
 library(sf)
 library(dplyr)
+library(htmlwidgets)
 
 ## load data
 
@@ -40,10 +41,10 @@ ui <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         selectInput("genderInput", "Select Gender:",
-                    choices = c("All", "Male", "Female"), selected = "All",
+                    choices = c("Male", "Female"), selected = "All",
 			  multiple = F),
         selectInput("raceInput", "Select Race/Ethnicity:",
-                    choices = c("All", "White", "Black", "Hispanic"), selected = "All",
+                    choices = c("White", "Black", "Hispanic"), selected = "All",
 			  multiple = F),
 	  selectInput("countyInput", "Select Texas County:",
 			  choices = unique(shiny_data$County), selected = "All",
