@@ -101,7 +101,9 @@ server <- shinyServer(function(input, output) {
                   fillColor = ~mypal(shiny_data$DeathCount),
                     #fillColor = "none",
                   color = "black",
-                  weight = 1) %>%
+                  weight = 1, 
+                  popup = paste("Region: ", selected_county, "<br>",
+                                            "Death Count: ", as.character(county_map()$DeathCount), "<br>")) %>%
       addMarkers(lat = shiny_data$latitude[shiny_data$County == selected_county],
                  lng = shiny_data$longitude[shiny_data$County == selected_county],
                  label = as.character(county_map()$DeathCount),
