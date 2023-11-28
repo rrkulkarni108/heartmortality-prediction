@@ -133,9 +133,9 @@ server <- shinyServer(function(input, output) {
     }
     
 
-    leaflet() %>%
+    leaflet(options = leafletOptions(zoomSnap = 0.25)) %>%
       addTiles() %>%
-      setView(lat = mean(shiny_data$latitude), lng = mean(shiny_data$longitude), zoom = 6) %>%
+      setView(lat = mean(shiny_data$latitude), lng = mean(shiny_data$longitude), zoom = 5.5	) %>%
       addPolygons(data = geojson_data,fillOpacity = 0.6,
                   fillColor = ~mypal(counts),
                     #fillColor = "none",
@@ -145,7 +145,8 @@ server <- shinyServer(function(input, output) {
                                             "Death Count: ", as.character(county_map()$DeathCount), "<br>")) %>%
       addMarkers(lat = shiny_data$latitude[shiny_data$County == selected_county],
                  lng = shiny_data$longitude[shiny_data$County == selected_county],
-                 label = as.character(county_map()$DeathCount),
+                 label = paste("Region: ", selected_county,
+                               ", Death Count: ", as.character(county_map()$DeathCount)),
                  labelOptions = labelOptions(noHide = TRUE), popup = selected_county)%>%
       addLegend(position = "bottomright", pal = mypal, values = counts,
                 title = "Death Count\n per 100,000 value",
