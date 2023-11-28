@@ -12,11 +12,13 @@ ui <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         selectInput("genderInput", "Select Gender:",
-                    choices = c("All", "Male", "Female"), selected = "All"),
+                    choices = c("Male", "Female"), selected = "All"),
         selectInput("raceInput", "Select Race/Ethnicity:",
-                    choices = c("All", "White", "Black", "Hispanic"), selected = "All"),
+                    choices = c("White", "Black", "Hispanic"), selected = "All"),
 	  selectInput("countyInput", "Select Texas County:",
-			  choices = choices = unique(imp_gender_race_tx$County), selected = "All")
+			  choices = 
+			    #choices = 
+			    unique(imp_gender_race_tx$County), selected = "All")
       ),
 
       mainPanel(
