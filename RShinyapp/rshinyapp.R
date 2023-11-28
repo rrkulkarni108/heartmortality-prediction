@@ -36,23 +36,27 @@ shiny_data <- read.csv("imp_gender_race_tx.csv")
   # Load GeoJSON data
   geojson_data <- st_read("TexasCounties.geojson")
   
-  
-  
+  #initialize some backup values
+  counts = shiny_data$DeathCount
+  rampcols = "#FFFFF"
+  mypal <- colorNumeric(palette = rampcols, domain = counts)
+
   ### Create an asymmetric color range
-  
-  ## Make vector of colors for values which are smaller (250 colors)
-  rc1 <- colorRampPalette(colors = c("white", "red"), space = "Lab")(150)
-  
-  ## Make vector of colors for values which are much larger than 50 (50 colors)
-  rc2 <- colorRampPalette(colors = c("red", "dark red"), space = "Lab")(100)
-  
-  ## Combine the two color palettes
-  rampcols <- c(rc1, rc2)
-  
-  mypal <- colorNumeric(palette = rampcols, domain = shiny_data$DeathCount)
-  
-  ## If you want to preview the color range, run the following code
-  #min deathcounts is 50.5, max deathcounts is 1053
+  setColorRange <- function(counts)  {
+    ## Make vector of colors for values which are smaller (150 colors)
+    rc1 <- colorRampPalette(colors = c("white", "red"), space = "Lab")(150)
+    
+    ## Make vector of colors for values which are much larger than 50 (100 colors)
+    rc2 <- colorRampPalette(colors = c("red", "dark red"), space = "Lab")(100)
+    
+    ## Combine the two color palettes
+    rampcols <- c(rc1, rc2)
+    
+    mypal <- colorNumeric(palette = rampcols, domain = counts)
+    return(mypal)
+  }  
+  ## If you want to preview the color range, run the following code inside the function block
+  #overall min deathcounts is 50.5, max deathcounts is 1053
   previewColors(colorNumeric(palette = rampcols, domain = NULL), values = 50:1100)
   
   
@@ -93,12 +97,47 @@ server <- shinyServer(function(input, output) {
   
    output$county_map <- renderLeaflet({
     selected_county <- county_map()$County[1]  # Assuming there's only one selected county
+  
+    
+    #change the map legend and color ranges based on inputs of race and gender
+    if (county_map()$Gender == "Male" & county_map()$Race_Ethnicity == "White") {
+      counts = shiny_data[shiny_data$Gender == "Male" & shiny_data$Race_Ethnicity == "White", ]$DeathCount
+      mypal = setColorRange(counts)
+      #previewColors(mypal, counts)
+
+    } 
+    else if(county_map()$Gender == "Female" & county_map()$Race_Ethnicity == "White"){
+      counts = shiny_data[shiny_data$Gender == "Female" & shiny_data$Race_Ethnicity == "White", ]$DeathCount
+      mypal = setColorRange(counts)
+
+    }
+    else if(county_map()$Gender == "Male" & county_map()$Race_Ethnicity == "Black"){
+      counts = shiny_data[shiny_data$Gender == "Male" & shiny_data$Race_Ethnicity == "Black", ]$DeathCount
+      mypal = setColorRange(counts)
+      
+    }
+    else if(county_map()$Gender == "Female" & county_map()$Race_Ethnicity == "Black"){
+      counts = shiny_data[shiny_data$Gender == "Female" & shiny_data$Race_Ethnicity == "Black", ]$DeathCount
+      mypal = setColorRange(counts)
+      
+    }
+    else if(county_map()$Gender == "Male" & county_map()$Race_Ethnicity == "Hispanic"){
+      counts = shiny_data[shiny_data$Gender == "Male" & shiny_data$Race_Ethnicity == "Hispanic", ]$DeathCount
+      mypal = setColorRange(counts)
+      
+    }
+    else if(county_map()$Gender == "Female" & county_map()$Race_Ethnicity == "Hispanic"){
+      counts = shiny_data[shiny_data$Gender == "Female" & shiny_data$Race_Ethnicity == "Hispanic", ]$DeathCount
+      mypal = setColorRange(counts)
+      
+    }
+    
 
     leaflet() %>%
       addTiles() %>%
       setView(lat = mean(shiny_data$latitude), lng = mean(shiny_data$longitude), zoom = 6) %>%
-      addPolygons(data = geojson_data,fillOpacity = 0.5,
-                  fillColor = ~mypal(shiny_data$DeathCount),
+      addPolygons(data = geojson_data,fillOpacity = 0.6,
+                  fillColor = ~mypal(counts),
                     #fillColor = "none",
                   color = "black",
                   weight = 1, 
@@ -107,8 +146,8 @@ server <- shinyServer(function(input, output) {
       addMarkers(lat = shiny_data$latitude[shiny_data$County == selected_county],
                  lng = shiny_data$longitude[shiny_data$County == selected_county],
                  label = as.character(county_map()$DeathCount),
-                 labelOptions = labelOptions(noHide = TRUE))%>%
-      addLegend(position = "bottomright", pal = mypal, values = shiny_data$DeathCount,
+                 labelOptions = labelOptions(noHide = TRUE), popup = selected_county)%>%
+      addLegend(position = "bottomright", pal = mypal, values = counts,
                 title = "Death Count\n per 100,000 value",
                 opacity = 1)
 

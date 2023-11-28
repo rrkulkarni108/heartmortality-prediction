@@ -54,5 +54,7 @@ shinyServer(function(input, output) {
       addMarkers(lat=31.81858 , lng=-95.65393, popup="Palestine, TX")
     m  # Print the map
     
+    
+    print(output)
   })
 })
