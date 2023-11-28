@@ -1,7 +1,7 @@
 ##User Interface
-
-library(shiny)
 library(leaflet)
+library(shiny)
+
 
 ui <- fluidPage(
 
@@ -25,7 +25,9 @@ ui <- fluidPage(
           ),
 
       mainPanel(
-        leafletOutput("county_map")
+        leafletOutput("county_map"), 
+        hr(),
+        print("Data from CDC Heart Mortality Data, October 2023")
       )
     )
 )
