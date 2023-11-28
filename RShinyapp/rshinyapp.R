@@ -1,6 +1,7 @@
 ## R Shiny App
 
-setwd("C:/Users/holly/OneDrive/Documents/R/656")
+#setwd("C:/Users/holly/OneDrive/Documents/R/656")
+setwd("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/RShinyapp")
 
 library(shiny)
 library(leaflet)
