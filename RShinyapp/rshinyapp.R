@@ -1,7 +1,7 @@
 ## R Shiny App
 
 #setwd("C:/Users/holly/OneDrive/Documents/R/656")
-setwd("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/RShinyapp")
+#setwd("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/RShinyapp")
 
 library(shiny)
 library(leaflet)
@@ -15,7 +15,7 @@ library(RColorBrewer)
 
 ## load data
 
-shiny_data <- read.csv("imp_gender_race_tx.csv")
+shiny_data <- read.csv("data/imp_gender_race_tx.csv")
 
   # Function to extract latitude and longitude
   extract_coordinates <- function(coord_string) {
@@ -80,7 +80,9 @@ ui <- fluidPage(
       ),
 
       mainPanel(
-        leafletOutput("county_map")
+        leafletOutput("county_map"),
+        hr(),
+        print("Data from CDC Heart Mortality Data, October 2023")
       )
     )
 )

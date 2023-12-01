@@ -11,11 +11,17 @@ library(shiny)
 library(leaflet)
 library(geojsonio)
 
+shiny_data <- read.csv("data/imp_gender_race_tx.csv")
+
 shinyServer(function(input, output) {
   
   # # Reading in the dataset
-  # shiny_data <- read.csv("imp_gender_race_tx.csv", header = T)
-   shiny_data <- read.csv("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/imp_gender_race_tx.csv", header = T)
+  #getwd()
+   #shiny_data <- read.csv("./heartmortality-prediction/RShinyapp/imp_gender_race_tx.csv", header = T)
+   #shiny_data <- read.csv("./imp_gender_race_tx.csv", header = T)
+  
+   
+   #shiny_data <- read.csv("C:/Users/kulra/Contacts/Desktop/heartmortality-prediction/RShinyapp/imp_gender_race_tx.csv", header = T)
    
 
   # Function to extract latitude and longitude

@@ -2,6 +2,7 @@
 library(leaflet)
 library(shiny)
 
+shiny_data <- read.csv("data/imp_gender_race_tx.csv")
 
 ui <- fluidPage(
 

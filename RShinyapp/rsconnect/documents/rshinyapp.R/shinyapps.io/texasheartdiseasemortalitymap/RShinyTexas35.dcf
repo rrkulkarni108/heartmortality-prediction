@@ -1,0 +1,13 @@
+name: RShinyTexas35
+title: RShinyTexas35
+username: texasheartdiseasemortalitymap
+account: texasheartdiseasemortalitymap
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10686232
+bundleId: 7993054
+url: https://texasheartdiseasemortalitymap.shinyapps.io/RShinyTexas35/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|server.R|ui.R
